@@ -142,12 +142,9 @@ void setup() {
 }
 
 void showFaces(int& tot, int cou){
-  if (cou == 0 || tot < 0){
-    if(tot < 0){
-      tot = 0; 
-    }
+  if(tot < 0){
     drawDead();
-    delay(2000);
+  }else if (cou == 0 ){
     display.clearDisplay();
     display.setCursor(17, 15); 
     display.setTextSize(2);
