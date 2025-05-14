@@ -4,8 +4,8 @@ from datetime import datetime
 class DataStorage:
     def __init__(self, filename):
         self.filename = filename
-        self.data = []
         self.CreateFile()
+        self.Total = 0
     
     def CreateFile(self):
         if not os.path.exists(self.filename):
@@ -15,6 +15,7 @@ class DataStorage:
                 print(f"File {self.filename} created successfully.")
         else:
             print(f"File {self.filename} already exists.")
+            self.Total = self.SumAllValues()
         pass 
 
     def RebuildFile(self):
