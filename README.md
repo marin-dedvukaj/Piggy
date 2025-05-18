@@ -13,4 +13,6 @@ Adaruit BusIO
 ## Python requirements
 ```
 pip install pyserial
+pip install matplotlib
+pip install pandas
 ```

@@ -1,40 +1,44 @@
 import csv
 import os
 from datetime import datetime
-
-class DataStorage:
-    """
-    This class handles the creation, writing, and reading of a CSV file.
-    It creates a file if it does not exist, and allows for writing data to it.
-    It also allows for rebuilding the file and summing all values in the file.
-    Attributes:
-        filename (str): The name of the CSV file.
-        Total (float): The total sum of all values in the file.
-    """
+import matplotlib.pyplot as plt
+import pandas as pd
+class DataStorageClass:
     def __init__(self, filename):
-        self.filename = filename
+        self.pathOfFile = self.findFilePath(filename)
         self.Total = 0
+        self.theGraph = None
         self.CreateFile()
-        self.Total = 0
+    
+    def findFilePath(self, filename):
+        path = os.path.join(os.environ.get('ProgramFiles'), 'Piggy')
+        if not os.path.exists(path):
+            os.makedirs(path)
+        else:
+            print(f"Directory {path} already exists.")
+        return os.path.join(path, filename)
+
     
     def CreateFile(self):
-        if not os.path.exists(self.filename):
-            with open(self.filename, mode='w', newline='') as file:
+        if not os.path.exists(self.pathOfFile):
+            with open(self.pathOfFile, mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(['DAteTime','Value'])
-                print(f"File {self.filename} created successfully.")
+                print(f"File {self.pathOfFile} created successfully.")
+            self.WriteData(0)
+            
         else:
-            print(f"File {self.filename} already exists.")
-            self.Total = self.SumAllValues()
+            print(f"File {self.pathOfFile} already exists.")
+        self.Total = self.SumAllValues()    
         pass 
 
     def RebuildFile(self):
-        if os.path.exists(self.filename):
-            os.remove(self.filename)
+        if os.path.exists(self.pathOfFile):
+            os.remove(self.pathOfFile)
             self.CreateFile()
-            print(f"File {self.filename} rebuilt successfully.")
+            print(f"File {self.pathOfFile} rebuilt successfully.")
         else:
-            print(f"File {self.filename} does not exist.")
+            print(f"File {self.pathOfFile} does not exist.")
             self.CreateFile()
         pass
 
@@ -42,14 +46,14 @@ class DataStorage:
         now = datetime.now()
         time = now.strftime("%Y-%m-%d %H:%M:%S")
         data = [time, value]
-        with open(self.filename, mode='a', newline='') as file:
+        with open(self.pathOfFile, mode='a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(data)
-            print(f"Data {data} written to {self.filename} successfully.")
+            print(f"Data {data} written to {self.pathOfFile} successfully.")
     
     def SumAllValues(self):
         self.total = 0
-        with open(self.filename, mode='r') as file:
+        with open(self.pathOfFile, mode='r') as file:
             reader = csv.reader(file)
             header = next(reader)
             value_index = header.index('Value')
@@ -58,7 +62,32 @@ class DataStorage:
                     total += float(row[value_index])
                 except (ValueError, IndexError):
                     continue
-        return total
+        return None
+    
+    def graphData(self):
+        if not os.path.exists(self.pathOfFile):
+            print(f"File {self.pathOfFile} does not exist. Please create a file first.")
+            raise FileNotFoundError(f"File {self.pathOfFile} does not exist.")
+        if not os.access(self.pathOfFile, os.R_OK):
+            print(f"File {self.pathOfFile} is not readable. Please check the file permissions.")
+            raise PermissionError(f"File {self.pathOfFile} is not readable.")
+        df = pd.read_csv(self.pathOfFile)
+        df['DateTime'] = pd.to_datetime(df['DateTime'])
+        self.theGraph, ax = plt.subplots()
+        ax.plot(df['DateTime'], df['Value'])
+        ax.set_xlabel('DateTime')
+        ax.set_ylabel('Value')
+        ax.set_title('Data over Time')
 
-
+    def showGraph(self):
+        if self.theGraph:
+            plt.show()
+        else:
+            print("No graph to show. Please create a graph first.")
+            try:
+                self.graphData()
+                self.showGraph()
+            except Exception as e:
+                print(f"Error showing graph: {e}")
+        return
             

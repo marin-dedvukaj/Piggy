@@ -1,16 +1,7 @@
 import serial
 
 class BluetoothCommunication:
-    """ 
-    BluetoothCommunication class
-    This class handles the Bluetooth communication with Piggy.
-    this class contains methods to connect, read data, write data, and close the connection.
-    Attributes:
-        bluetooth_port (str): The Bluetooth port to connect to.
-        baud_rate (int): The baud rate for the connection.
-        ser (serial.Serial): The serial object for Bluetooth communication. 
-    """
-
+    
     def __init__(self, bluetooth_port='COM5', baud_rate=9600):
         self.bluetooth_port = bluetooth_port
         self.baud_rate = baud_rate
@@ -29,7 +20,7 @@ class BluetoothCommunication:
             return line
         else:
             raise serial.SerialTimeoutException("No data available to read.")
-    
+
     def writeData(self, data):  
         if self.ser and self.ser.is_open:
             try:
@@ -43,6 +34,11 @@ class BluetoothCommunication:
             return None
 
     def close(self):
+        if self.ser and self.ser.is_open:
+            self.ser.close()
+            print("Bluetooth connection closed.")
+    
+    def __del__(self):
         if self.ser and self.ser.is_open:
             self.ser.close()
             print("Bluetooth connection closed.")
