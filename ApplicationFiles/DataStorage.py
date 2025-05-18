@@ -1,9 +1,19 @@
 import csv
 import os
 from datetime import datetime
+
 class DataStorage:
+    """
+    This class handles the creation, writing, and reading of a CSV file.
+    It creates a file if it does not exist, and allows for writing data to it.
+    It also allows for rebuilding the file and summing all values in the file.
+    Attributes:
+        filename (str): The name of the CSV file.
+        Total (float): The total sum of all values in the file.
+    """
     def __init__(self, filename):
         self.filename = filename
+        self.Total = 0
         self.CreateFile()
         self.Total = 0
     
@@ -38,7 +48,7 @@ class DataStorage:
             print(f"Data {data} written to {self.filename} successfully.")
     
     def SumAllValues(self):
-        total = 0
+        self.total = 0
         with open(self.filename, mode='r') as file:
             reader = csv.reader(file)
             header = next(reader)
