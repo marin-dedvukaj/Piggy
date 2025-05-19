@@ -14,6 +14,7 @@ class DataStorageClass:
         path = os.path.join(os.environ.get('ProgramFiles'), 'Piggy')
         if not os.path.exists(path):
             os.makedirs(path)
+            print(f"Directory {path} created successfully.")
         else:
             print(f"Directory {path} already exists.")
         return os.path.join(path, filename)
@@ -29,7 +30,7 @@ class DataStorageClass:
             
         else:
             print(f"File {self.pathOfFile} already exists.")
-        self.Total = self.SumAllValues()    
+        self.SumAllValues()    
         pass 
 
     def RebuildFile(self):
@@ -52,14 +53,14 @@ class DataStorageClass:
             print(f"Data {data} written to {self.pathOfFile} successfully.")
     
     def SumAllValues(self):
-        self.total = 0
+        self.Total = 0
         with open(self.pathOfFile, mode='r') as file:
             reader = csv.reader(file)
             header = next(reader)
             value_index = header.index('Value')
             for row in reader:
                 try:
-                    total += float(row[value_index])
+                    self.Total += float(row[value_index])
                 except (ValueError, IndexError):
                     continue
         return None
