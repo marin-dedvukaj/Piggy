@@ -2,7 +2,6 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from DataStorage import DataStorageClass
 from Communication import BluetoothCommunication
-import os
 def main():
     # Connect to bluetooth
     bl = BluetoothCommunication()
