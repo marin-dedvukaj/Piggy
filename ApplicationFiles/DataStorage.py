@@ -24,7 +24,7 @@ class DataStorageClass:
         if not os.path.exists(self.pathOfFile):
             with open(self.pathOfFile, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(['DAteTime','Value'])
+                writer.writerow(['DateTime','Value'])
                 print(f"File {self.pathOfFile} created successfully.")
             self.WriteData(0)
             
@@ -72,13 +72,20 @@ class DataStorageClass:
         if not os.access(self.pathOfFile, os.R_OK):
             print(f"File {self.pathOfFile} is not readable. Please check the file permissions.")
             raise PermissionError(f"File {self.pathOfFile} is not readable.")
+        
         df = pd.read_csv(self.pathOfFile)
         df['DateTime'] = pd.to_datetime(df['DateTime'])
+        df = df.sort_values('DateTime')
+        df['CumulativeSum'] = df['Value'].cumsum()
+
         self.theGraph, ax = plt.subplots()
-        ax.plot(df['DateTime'], df['Value'])
+        ax.plot(df['DateTime'], df['CumulativeSum'])
         ax.set_xlabel('DateTime')
-        ax.set_ylabel('Value')
-        ax.set_title('Data over Time')
+        ax.set_ylabel('Cumulative Sum of Value')
+        ax.set_title('Cumulative Data over Time')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.grid()
 
     def showGraph(self):
         if self.theGraph:
