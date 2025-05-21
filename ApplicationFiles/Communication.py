@@ -26,7 +26,7 @@ class BluetoothCommunication:
     def writeData(self, data):  
         if self.ser and self.ser.is_open:
             try:
-                self.ser.write(str(data).encode())
+                self.ser.write(f"{data}\r\n".encode())  # add newline
                 print(f"Data sent: {data}")
             except serial.SerialTimeoutException as e:
                 print(f"Write timeout: {e}")
@@ -34,6 +34,7 @@ class BluetoothCommunication:
         else:
             print("Bluetooth connection is not open.")
             return None
+
 
     def close(self):
         if self.ser and self.ser.is_open:

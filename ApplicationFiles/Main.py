@@ -36,6 +36,7 @@ class PiggyApp:
             self.displayGraph()
         except Exception as e:
             self.balance_var.set(f"Error: {e}")
+        self.root.after(1000, self.update_display)     
 
 
     def displayGraph(self):
@@ -62,12 +63,10 @@ def ComunicateWithBluetooth():
         print(f"Received: {data}")
         app.storage.WriteData(data)
         app.storage.SumAllValues()
-        app.bluetooth.writeData(app.storage.Total)
-        app.update_display()
+        #app.bluetooth.writeData(app.storage.Total)
 
 
 thread = threading.Thread(target=ComunicateWithBluetooth)
-thread.daemon = True
 
 def main():
     thread.start()

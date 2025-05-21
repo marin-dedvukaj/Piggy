@@ -63,6 +63,9 @@ class DataStorageClass:
                     self.Total += float(row[value_index])
                 except (ValueError, IndexError):
                     continue
+        if self.Total < 0:
+            print("You went bankrupt")
+            self.RebuildFile()
         return None
     
     def graphData(self):

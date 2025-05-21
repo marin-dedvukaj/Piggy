@@ -24,6 +24,20 @@ void sendValue(int value) {
   Serial.println(value);
 }
 
+int reciveValue() {
+  Serial.setTimeout(2000);
+  Serial.println("Waiting for int...");
+  while (true) {
+    while (Serial.available()) {
+      char c = Serial.read();
+      Serial.print("Char received: ");
+      Serial.println(c);
+      }
+    }
+  }
+
+
+
 void drawSad (void) {
     display.clearDisplay();
     display.fillRect(39, 22, 12, 10, 1);
@@ -204,7 +218,7 @@ void loop() {
     if (millis() - lastButtonPress > 200) {
       display.clearDisplay();
       sendValue(counter);
-      total += counter;
+      total += counter ;//reciveValue()
       showFaces(total , counter);
       lastButtonPress = millis();
       counter = 0;
